@@ -32,18 +32,19 @@ const Homebrew = React.createClass({
 		};
 	},
 	componentWillMount: function() {
-		global.account = this.props.account;
+		global.account = this.props.account || { username: "brian.feister@gmail.com", issued: "2017-05-11T01:40:20.467Z" };
 		global.version = this.props.version;
 
 
 		Router = CreateRouter({
-			'/edit/:id' : (args) => {
+			'/edit/:id' : (args, query) => {
 				if(!this.props.brew.editId){
 					return <ErrorPage errorId={args.id}/>
 				}
 
 				return <EditPage
 					id={args.id}
+					dataStartPage={query.start_pg}
 					brew={this.props.brew} />
 			},
 
@@ -63,7 +64,10 @@ const Homebrew = React.createClass({
 				/>
 			},
 			'/print/:id' : (args, query) => {
-				return <PrintPage brew={this.props.brew} query={query}/>;
+				return <PrintPage
+					brew={this.props.brew}
+					dataStartPage={query.start_pg}
+					query={query}/>;
 			},
 			'/print' : (args, query) => {
 				return <PrintPage query={query}/>;

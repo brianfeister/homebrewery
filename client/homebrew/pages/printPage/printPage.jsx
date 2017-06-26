@@ -29,9 +29,15 @@ const PrintPage = React.createClass({
 
 	renderPages : function(){
 		return _.map(this.state.brewText.split('\\page'), (page, index) => {
+			let startPageVal = (this.props.dataStartPage === undefined) ? 'Missing start_pg=X query param' : index + 1 + parseInt( this.props.dataStartPage, 10 );
+			if ( Number.isInteger(startPageVal) && startPageVal < 1 ) {
+				startPageVal = '';
+			}
+			const startPage = {'data-start-page': startPageVal };
 			return <div
 				className='phb'
 				id={`p${index + 1}`}
+				{...startPage}
 				dangerouslySetInnerHTML={{__html:Markdown.render(page)}}
 				key={index} />;
 		});

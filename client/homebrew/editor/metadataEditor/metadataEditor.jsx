@@ -12,6 +12,7 @@ const MetadataEditor = React.createClass({
 				editId : null,
 				title : '',
 				description : '',
+				footerText: '',
 				tags : '',
 				published : false,
 				authors : [],
@@ -139,6 +140,13 @@ const MetadataEditor = React.createClass({
 				<textarea value={this.props.metadata.description} className='value'
 					onChange={this.handleFieldChange.bind(null, 'description')} />
 			</div>
+
+			<div className='field footer-text'>
+				<label>footer text</label>
+				<textarea value={this.props.metadata.footerText} className='value'
+					onChange={this.handleFieldChange.bind(null, 'footerText')} />
+			</div>
+
 			{/*}
 			<div className='field tags'>
 				<label>tags</label>

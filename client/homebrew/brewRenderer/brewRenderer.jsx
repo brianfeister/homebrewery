@@ -21,6 +21,18 @@ const BrewRenderer = React.createClass({
 	getInitialState: function() {
 		const pages = this.props.text.split('\\page');
 
+		var startPage = 0;
+		console.log('this.props.dataStartPage',this.props.dataStartPage)
+		if ( parseInt( this.props.dataStartPage, 10) > 0 ) {
+			startPage = 0;
+		}
+		// var hasStartPgOffset =
+		// 	window.location.search.match('start_pg').length > 0
+		// 	&&
+		// 	window.location.search.match('=').length > 0;
+		// if ( hasStartPgOffset ) {
+		// 	startPage = window.location.search.substr(1).split('=')[1];
+		// }
 		return {
 			viewablePageNumber: 0,
 			height : 0,
@@ -29,6 +41,7 @@ const BrewRenderer = React.createClass({
 			usePPR : true,
 
 			pages : pages,
+			startPage: startPage,
 			usePPR : pages.length >= PPR_THRESHOLD,
 
 			errors : []
@@ -50,8 +63,10 @@ const BrewRenderer = React.createClass({
 		if(this.refs.pages && this.refs.pages.firstChild) this.pageHeight = this.refs.pages.firstChild.clientHeight;
 
 		const pages = nextProps.text.split('\\page');
+		const startPage = this.props.dataStartPage;
 		this.setState({
 			pages : pages,
+			startPage: startPage,
 			usePPR : pages.length >= PPR_THRESHOLD
 		})
 	},
@@ -77,9 +92,13 @@ const BrewRenderer = React.createClass({
 		if(!this.state.isMounted) return false;
 
 		var viewIndex = this.state.viewablePageNumber;
+		if(index == viewIndex - 3) return true;
+		if(index == viewIndex - 2) return true;
 		if(index == viewIndex - 1) return true;
 		if(index == viewIndex)     return true;
 		if(index == viewIndex + 1) return true;
+		if(index == viewIndex + 2) return true;
+		if(index == viewIndex + 3) return true;
 
 		//Check for style tages
 		if(pageText.indexOf('<style>') !== -1) return true;
@@ -108,7 +127,15 @@ const BrewRenderer = React.createClass({
 	},
 
 	renderPage : function(pageText, index){
-		return <div className='phb' id={`p${index + 1}`} dangerouslySetInnerHTML={{__html:Markdown.render(pageText)}} key={index} />
+		let startPageVal = (this.props.dataStartPage === undefined) ? 'Missing start_pg=X query param' : index + 1 + parseInt( this.props.dataStartPage, 10 );
+		if ( Number.isInteger(startPageVal) && startPageVal < 1 ) {
+			startPageVal = '';
+		}
+		const startPage = {'data-start-page': startPageVal };
+		return <div className='phb'
+			id={`p${index + 1}`}
+			{...startPage}
+			dangerouslySetInnerHTML={{__html:Markdown.render(pageText)}} key={index} />
 	},
 
 	renderPages : function(){

@@ -10,6 +10,7 @@ const BrewLookup = React.createClass({
 	getDefaultProps: function() {
 		return {
 			adminKey : '',
+			homebrews: []
 		};
 	},
 	getInitialState: function() {
@@ -54,13 +55,20 @@ const BrewLookup = React.createClass({
 	},
 
 	render: function(){
-		return <div className='brewLookup'>
-			<h1>Brew Lookup</h1>
-			<input type='text' value={this.state.query} onChange={this.handleChange} placeholder='edit or share id...' />
-			<button onClick={this.lookup}><i className='fa fa-search'/></button>
-
-			{this.renderFoundBrew()}
-		</div>
+		return (
+			<ul>
+			{ this.props.homebrews.map(function(brew){
+	            return <li key={ JSON.stringify( brew )}> <div className='brewRow'>
+				<div className='title'>Title: <strong> {brew.title} </strong></div>
+				<div>Authors: <strong> {brew.authors.join(', ')} </strong> </div>
+				<div>Edit Link: <strong> <a href={'/edit/' + brew.editId} target='_blank'>/edit/{brew.editId} </a> </strong></div>
+				<div>Preview Link: <strong> <a href={'/share/' + brew.shareId} target='_blank'>/share/{brew.shareId}</a> </strong></div>
+				<div>Last Updated: <strong> {Moment(brew.updatedAt).fromNow()} </strong> </div>
+				</div>
+				</li>
+	        }) }
+	        </ul>
+		)
 	}
 });
 

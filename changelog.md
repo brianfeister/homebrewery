@@ -1,5 +1,15 @@
 # changelog
 
+### Saturday, 22/04/217 - v2.7.4
+- Give ability to hide the render warning notification
+
+
+### Friday, 03/03/2017 - v2.7.3
+- Increasing the range on the Partial Page Rendering for a quick-fix for it getting out of sync on long brews.
+
+### Saturday, 18/02/2017 - v2.7.2
+- Adding ability to delete a brew from the user page, incase the user creates a brew that makes the edit page unrender-able. (re:309)
+
 ## BIG NEWS
 With the next major release of Homebrewery, v3.0.0, this tool *will no longer support raw HTML input for brew code*. Most issues and errors users are having are because of this feature and it's become too taxing to help and fix these issues.
 

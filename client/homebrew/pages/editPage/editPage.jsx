@@ -19,7 +19,6 @@ const Markdown = require('naturalcrit/markdown.js');
 
 const SAVE_TIMEOUT = 3000;
 
-
 const EditPage = React.createClass({
 	getDefaultProps: function() {
 		return {
@@ -43,7 +42,7 @@ const EditPage = React.createClass({
 	getInitialState: function() {
 		return {
 			brew : this.props.brew,
-
+			dataStartPage: this.props.dataStartPage,
 			isSaving : false,
 			isPending : false,
 			errors : null,
@@ -201,7 +200,9 @@ const EditPage = React.createClass({
 				<Nav.item newTab={true} href={'/share/' + this.props.brew.shareId} color='teal' icon='fa-share-alt'>
 					Share
 				</Nav.item>
-				<PrintLink shareId={this.props.brew.shareId} />
+				<PrintLink
+					startPage={this.state.dataStartPage}
+					shareId={this.props.brew.shareId} />
 				<Account />
 			</Nav.section>
 		</Navbar>
@@ -220,7 +221,10 @@ const EditPage = React.createClass({
 						metadata={this.state.brew}
 						onMetadataChange={this.handleMetadataChange}
 					/>
-					<BrewRenderer text={this.state.brew.text} errors={this.state.htmlErrors} />
+					<BrewRenderer
+						text={this.state.brew.text}
+						dataStartPage={this.state.dataStartPage}
+						errors={this.state.htmlErrors} />
 				</SplitPane>
 			</div>
 		</div>

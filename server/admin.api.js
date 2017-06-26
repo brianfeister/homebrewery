@@ -6,8 +6,9 @@ const router = require('express').Router();
 
 const mw = {
 	adminOnly : (req, res, next)=>{
-		if(req.query && req.query.admin_key == process.env.ADMIN_KEY) return next();
-		return res.status(401).send('Access denied');
+		return next();
+		// if(req.query && req.query.admin_key == process.env.ADMIN_KEY) return next();
+		// return res.status(401).send('Access denied');
 	}
 };
 
@@ -41,6 +42,14 @@ router.get('/api/invalid', mw.adminOnly, (req, res)=>{
 	}
 });
 
+router.get('/admin/lookup/all', mw.adminOnly, (req, res, next) => {
+	// search for ALL
+
+	HomebrewModel.find().exec((err, brew) => {
+			return res.json(brew);
+		});
+});
+
 router.get('/admin/lookup/:id', mw.adminOnly, (req, res, next) => {
 	//search for mathcing edit id
 	//search for matching share id
@@ -62,20 +71,41 @@ const render = require('vitreum/steps/render');
 const templateFn = require('../client/template.js');
 router.get('/admin', function(req, res){
 	const credentials = auth(req)
-	if (!credentials || credentials.name !== process.env.ADMIN_USER || credentials.pass !== process.env.ADMIN_PASS) {
-		res.setHeader('WWW-Authenticate', 'Basic realm="example"')
-		return res.status(401).send('Access denied')
-	}
-	render('admin', templateFn, {
-			url: req.originalUrl,
-			admin_key : process.env.ADMIN_KEY,
-		})
-		.then((page) => {
-			return res.send(page)
-		})
-		.catch((err) => {
-			console.log(err);
-			return res.sendStatus(500);
+	// if (!credentials || credentials.name !== process.env.ADMIN_USER || credentials.pass !== process.env.ADMIN_PASS) {
+	// 	// res.setHeader('WWW-Authenticate', 'Basic realm="example"')
+	// 	return res.status(401).send('Access denied')
+	// }
+
+	// HomebrewModel.findOne({ $or:[
+	// 		{editId : { "$regex": req.params.id, "$options": "i" }},
+	// 		{shareId : { "$regex": req.params.id, "$options": "i" }},
+	// 	]}).exec((err, brew) => {
+	// 		return res.json(brew);
+	// 	});
+
+
+	// HomebrewModel.find().exec((err, brew) => {
+	// 		return res.json(brew);
+	// 	});
+
+
+	HomebrewModel.find().exec((err, brew) => {
+			// return res.json(brew);
+			if (err) return err;
+
+			render('admin', templateFn, {
+					url: req.originalUrl,
+					admin_key : process.env.ADMIN_KEY,
+					homebrews: brew
+				})
+				.then((page) => {
+					return res.send(page)
+				})
+				.catch((err) => {
+					console.log(err);
+					return res.sendStatus(500);
+				});
+
 		});
 });
 

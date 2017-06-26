@@ -145,7 +145,7 @@ var HomebrewAdmin = React.createClass({
 		var self = this;
 		return <div className='homebrewAdmin'>
 
-			<BrewLookup adminKey={this.props.admin_key} />
+			<BrewLookup homebrews={this.props.homebrews} adminKey={this.props.admin_key} />
 
 			{/*
 			<h2>

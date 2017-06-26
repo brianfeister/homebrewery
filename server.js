@@ -41,7 +41,7 @@ const HomebrewModel = require('./server/homebrew.model.js').model;
 const welcomeText = require('fs').readFileSync('./client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
 const changelogText = require('fs').readFileSync('./changelog.md', 'utf8');
 
-
+const pdf = require('html-pdf');
 
 //Source page
 String.prototype.replaceAll = function(s,r){return this.split(s).join(r)}
@@ -112,6 +112,19 @@ app.get('/print/:id', (req, res, next)=>{
 		});
 });
 
+//Save PDF Page
+app.get('/pdf/:id', (req, res, next)=>{
+	HomebrewModel.get({shareId : req.params.id})
+		.then((brew)=>{
+			req.brew = brew.sanatize(true);
+			return next();
+		})
+		.catch((err)=>{
+			console.log(err);
+			return res.status(400).send(`Can't get that`);
+		});
+});
+
 
 //Render Page
 const render = require('vitreum/steps/render');
@@ -127,6 +140,16 @@ app.use((req, res) => {
 			account : req.account
 		})
 		.then((page) => {
+
+			// const compiledCSS = require('fs').readFileSync('./build/homebrew/bundle.css', 'utf8');
+			// console.log('compiledCSS',compiledCSS)
+			// page.replace('<link rel="stylesheet" type="text/css" href="/homebrew/bundle.css" />', '<style>' + compiledCSS + '</style>');
+			// pdf.create(page, { format: 'Letter' } ).toFile('./'+req.brew.id
+			// +'.pdf', (err, res) => {
+			//   if (err) return console.log(err);
+			//   console.log(res); // { filename: '/app/businesscard.pdf' }
+			// });
+
 			return res.send(page)
 		})
 		.catch((err) => {
